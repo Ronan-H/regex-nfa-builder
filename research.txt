@@ -1,0 +1,30 @@
+I began the project already with a reasonably good idea on how to represent an NFA in code and how to feed it symbols to prompt state transitions.
+
+My first piece of research was to look into Thomson's Construction. This helped me understand how I could join NFAs together based on special symbols such as * and |.
+https://en.wikipedia.org/wiki/Thompson%27s_construction
+
+The page also mentions that the algorithm is recursive. This gave me a much better idea of how I would go about tackling the project.
+As per the page, a symbol "a" on it's own can be represented in an NFA as:
+
+->O-a->O
+
+(where the rightmost state accepts)
+
+This means that, when any regular expression is be broken down far enough, a single alphabet symbol can be represented in an NFA as above.
+
+Once the above is done, what remains is only the joining of those NFAs in various ways depending on the special symbols used. This joining process will be the most difficult part of the project for me, I believe.
+
+Example of this idea:
+regex "ab|a" = ("a"."b")|"a"
+
+Here, expressions "a" and "b" act as base cases; they are converted directly to NFAs (the construction of these is simple). They are then concatenated. "a" on the right again is converted to an NFA directly. Those two NFAs will then be merged with the union operator.
+This leaves us with a single NFA that matches "ab|a".
+
+I realized that I'll have to choose some sort of precedence/order of operations for the recursive function - I will assume the order used in this article is the standard.
+https://medium.com/@DmitrySoshnikov/building-a-regexp-machine-part-2-finite-automata-nfa-fragments-5a7c5c005ef0#25e3
+Order: Symbol, Kleen star, Concatenation, Union
+(Parenthesis obviously have maximum precedence, if I am to include them in the project)
+
+I used the official Python documentation to learn about how unit testing is done in Python.
+I hope that developing test cases for different parts of the project will lower the amount of time I have to spend looking for the cause of bugs.
+https://docs.python.org/2/library/unittest.html

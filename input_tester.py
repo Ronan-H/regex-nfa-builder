@@ -1,5 +1,6 @@
 import sys
 from nfa import NFA
+import nfa_utils
 
 # print the welcome text block
 # TODO: read this from a file instead?
@@ -12,6 +13,7 @@ print("You can give input text to test against that regex by just typing it in b
 
 # regular expression string to compare against provided input
 regex = None
+regex_nfa = None
 # last line of user input read from the command line
 line_read = ""
 
@@ -30,15 +32,22 @@ while True:
     if line_read_lower.startswith("regex="):
         # user wants to set the regex to a string they've provided
         regex = line_read[6:]
-        print("New regex string:", regex)
-        NFA(regex)
+        print("New regex pattern:", regex, "\n")
+        regex_nfa = nfa_utils.get_regex_nfa(regex)
+        print(regex_nfa)
     else:
         # assume the user intends to test this entered string against the regex
-        if regex is None:
+        if regex_nfa is None:
             # regex has not yet been set
             print("Please supply a regular expression string first")
         else:
-            print("(Regex matching test done here)")
+            for symbol in line_read:
+                regex_nfa.feed_symbol(symbol)
+            accepts = regex_nfa.is_accepting()
+            print("String accepted: ", "Yes" if accepts else "No")
+
+            # print(regex_nfa)
+            regex_nfa.reset()
 
     # print a new line for aesthetics
     print()

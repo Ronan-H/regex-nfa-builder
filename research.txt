@@ -22,7 +22,7 @@ This leaves us with a single NFA that matches "ab|a".
 
 I realized that I'll have to choose some sort of precedence/order of operations for the recursive function - I will assume the order used in this article is the standard.
 https://medium.com/@DmitrySoshnikov/building-a-regexp-machine-part-2-finite-automata-nfa-fragments-5a7c5c005ef0#25e3
-Order: Symbol, Kleen star, Concatenation, Union
+Order: Symbol, Kleene star, Concatenation, Union
 (Parenthesis obviously have maximum precedence, if I am to include them in the project)
 
 I used the official Python documentation to learn about how unit testing is done in Python.

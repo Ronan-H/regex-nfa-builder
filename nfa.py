@@ -1,17 +1,19 @@
 class NFA:
     """class representing a non-deterministic finite automaton"""
 
-    def __init__(self, regex):
+    def __init__(self):
+        """
+        Creates a blank NFA
+        """
+
         # all NFAs have a single initial state by default
+        self.alphabet = set()
         self.states = {0}
-        self.alphabet = set(regex)
         self.transition_function = {}
         self.accept_states = set()
 
         # set of states that the NFA is currently in
-        self.in_states = self.states.copy()
-
-        print("Alphabet: ", self.alphabet)
+        self.in_states = {0}
 
     def add_state(self, state, accepts=False):
         self.states.add(state)
@@ -21,10 +23,13 @@ class NFA:
 
     def add_transition(self, from_state, symbol, to_state):
         self.transition_function[(from_state, symbol)] = to_state
+        self.alphabet.add(symbol)
 
     def feed_symbol(self, symbol):
-        # feeds a symbol into the NFA, calculating which states the
-        # NFA is now in, based on which states it used to be in
+        """
+        Feeds a symbol into the NFA, calculating which states the
+        NFA is now in, based on which states it used to be in
+        """
 
         new_states = set()
 
@@ -40,8 +45,73 @@ class NFA:
 
         self.in_states = new_states
 
+        # feed the empty string through the nfa
+        self.feed_empty()
+
+    def feed_empty(self):
+        """
+        Continuously feeds empty strings into the NFA until they fail
+        to cause any further state transitions
+        """
+
+        new_states = None
+        prev_states = self.states
+        first_run = True
+
+        # TODO: check if Python has do..while statements to use here
+        while first_run or len(new_states) > 0:
+            new_states = set()
+
+            # process each state in turn
+            for state in prev_states:
+                pair = (state, "")
+
+                # check if this state has a transition using the empty string
+                # to another state
+                if pair in self.transition_function:
+                    # add the corresponding new state to the updated states list
+                    new_states.add(self.transition_function[pair])
+
+            self.in_states = self.in_states | new_states
+            prev_states = new_states
+            first_run = False
+
     def is_accepting(self):
         # accepts if we are in ANY accept states
-        # ie. accepts if in_states and accept_states share any states in common
+        # ie. if in_states and accept_states share any states in common
         return len(self.in_states & self.accept_states) > 0
+
+    def is_dead(self):
+        """
+        Returns true if the NFA is not in ANY states.
+        A "dead" NFA can never be in any states again.
+        """
+        return len(self.in_states) == 0
+
+    def reset(self):
+        """
+        Resets the NFA by putting it back to it's initial state,
+        and feeding the empty string through it
+        """
+        self.in_states = {0}
+        self.feed_empty()
+
+    def __str__(self):
+        """
+        String representation of this NFA.
+        Useful for debugging.
+        """
+        return "NFA:\n" \
+               "Alphabet: {}\n" \
+               "States: {}\n" \
+               "Transition Function: {}\n" \
+               "Accept States: {}\n" \
+               "In states: {}\n" \
+               "Accepting: {}\n"\
+            .format(self.alphabet,
+                    self.states,
+                    self.transition_function,
+                    self.accept_states,
+                    self.in_states,
+                    "Yes" if self.is_accepting() else "No")
 

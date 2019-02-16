@@ -13,7 +13,7 @@ class TestNFA(unittest.TestCase):
         # test NFA state
         self.assertEqual(nfa.alphabet,{'x'})
         self.assertEqual(nfa.states, {0, 1})
-        self.assertEqual(nfa.transition_function, {(0, 'x'): 1})
+        self.assertEqual(nfa.transition_function, {(0, 'x'): {1}})
         self.assertEqual(nfa.accept_states, {1})
         self.assertEqual(nfa.in_states, {0})
 
@@ -85,12 +85,12 @@ class TestNFA(unittest.TestCase):
         # construct an NFA equivalent to a|<empty string>
         nfa = nfa_utils.get_single_symbol_regex("a")
         nfa.add_state(2, True)
-        nfa.add_transition(0, "", 2)
+        nfa.add_transition(0, "", {2})
         nfa.reset()
         print(nfa)
 
-        # NFA should accept straight away due to the emoty string transition
-        # from the initial state to an acecpt state
+        # NFA should accept straight away due to the empty string transition
+        # from the initial state to an accept state
         self.assertTrue(nfa.is_accepting())
         # after feeding an 'a', the NFA should accept; state 2 is dead
         # but a transition from state 0 to 1 (accepts) should still work
@@ -101,3 +101,31 @@ class TestNFA(unittest.TestCase):
         nfa.feed_symbol("a")
         self.assertFalse(nfa.is_accepting())
         self.assertTrue(nfa.is_dead())
+
+    def test_nfa_union(self):
+        print("Testing NFA union a.b|c.d")
+
+        nfa = nfa_utils.get_union(
+            nfa_utils.get_regex_nfa("a.b"),
+            nfa_utils.get_regex_nfa("c.d")
+        )
+
+        print(nfa)
+
+        self.assertFalse(nfa.is_accepting())
+        nfa.feed_symbol("a")
+        self.assertFalse(nfa.is_accepting())
+        nfa.feed_symbol("b")
+        self.assertTrue(nfa.is_accepting())
+        nfa.feed_symbol("c")
+        self.assertFalse(nfa.is_accepting())
+
+        nfa.reset()
+        self.assertFalse(nfa.is_accepting())
+        nfa.feed_symbol("c")
+        self.assertFalse(nfa.is_accepting())
+        nfa.feed_symbol("d")
+        self.assertTrue(nfa.is_accepting())
+        nfa.feed_symbol("e")
+        self.assertFalse(nfa.is_accepting())
+

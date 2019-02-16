@@ -19,8 +19,8 @@ class NFA:
         if accepts:
             self.accept_states.add(state)
 
-    def add_transition(self, from_state, symbol, to_state):
-        self.transition_function[(from_state, symbol)] = to_state
+    def add_transition(self, from_state, symbol, to_states):
+        self.transition_function[(from_state, symbol)] = to_states
         self.alphabet.add(symbol)
 
     def feed_symbol(self, symbol):
@@ -43,7 +43,7 @@ class NFA:
             # new state, based on what symbol was fed in
             if pair in self.transition_function:
                 # add the corresponding new state to the updated states list
-                new_states.add(self.transition_function[pair])
+                new_states |= self.transition_function[pair]
 
         self.in_states = new_states
 
@@ -75,7 +75,7 @@ class NFA:
                 # to another state
                 if pair in self.transition_function:
                     # add the corresponding new state to the updated states list
-                    new_states.add(self.transition_function[pair])
+                    new_states |= self.transition_function[pair]
 
             # merge new states back into "in" states, and reset for next pass
             self.in_states |= new_states

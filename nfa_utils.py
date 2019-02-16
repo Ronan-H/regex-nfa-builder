@@ -6,12 +6,12 @@ def get_single_symbol_regex(symbol):
 
     nfa = NFA()
     nfa.add_state(1, True)
-    nfa.add_transition(0, symbol, 1)
+    nfa.add_transition(0, symbol, {1})
 
     return nfa
 
 
-def shift_nfa(nfa, inc):
+def shift(nfa, inc):
     """
     Increases the value of all states (including accept states and transition function etc)
     of a given NFA bya given value.
@@ -33,9 +33,24 @@ def shift_nfa(nfa, inc):
     # update NFA transition function
     new_transition_function = {}
     for pair in nfa.transition_function:
+        to_set = nfa.transition_function[pair]
+        new_to_set = set()
+
+        for state in to_set:
+            new_to_set.add(state + inc)
+
         new_key = (pair[0] + inc, pair[1])
-        new_transition_function[new_key] = nfa.transition_function[pair] + inc
+        new_transition_function[new_key] = new_to_set
+
     nfa.transition_function = new_transition_function
+
+
+def merge(a, b):
+    """Merges two NFAs into one by combining their states and transition function"""
+    a.accept_states = b.accept_states
+    a.states |= b.states
+    a.transition_function.update(b.transition_function)
+    a.alphabet |= b.alphabet
 
 
 def get_concat(a, b):
@@ -47,20 +62,17 @@ def get_concat(a, b):
     add = max(a.states)
 
     # shift b's state/accept states/transition function, etc.
-    shift_nfa(b, add)
+    shift(b, add)
 
     # merge b into a
-    a.accept_states = b.accept_states
-    a.states |= b.states
-    a.transition_function.update(b.transition_function)
-    a.alphabet |= b.alphabet
+    merge(a, b)
 
     return a
 
 
 def get_nfa_list_concat(nfa_list):
     """
-    Concatenates a list of NFA obecjts into one nfa
+    Concatenates a list of NFA objects into one nfa
 
     Eg. The NFA list [a, b, c] become a single NFA a.b.c
     """
@@ -77,8 +89,28 @@ def get_nfa_list_concat(nfa_list):
 
 def get_union(a, b):
     """Returns the resulting union of two NFAs.(the '|' operator)"""
-    # TODO this method
-    pass
+
+    nfa = NFA()
+
+    a.accept_states = set()
+    b.accept_states = set()
+
+    shift(a, 1)
+    merge(nfa, a)
+
+    shift(b, max(nfa.states) + 1)
+    merge(nfa, b)
+
+    nfa.add_transition(0, "", {1, min(b.states)})
+
+    new_accept = max(nfa.states) + 1
+    nfa.add_state(new_accept, True)
+    nfa.add_transition(max(a.states), "", {new_accept})
+    nfa.add_transition(max(b.states), "", {new_accept})
+
+    nfa.reset()
+
+    return nfa
 
 
 def get_regex_nfa(regex):
@@ -90,8 +122,9 @@ def get_regex_nfa(regex):
 
     # special symbols: *.| (in order of precedence highest to lowest, symbols coming before that
 
-    # concatenation
+    # concatenation operator
     if "." in regex:
         parts = regex.split(".")
         sub_nfa_list = [get_regex_nfa(part) for part in parts]
         return get_nfa_list_concat(sub_nfa_list)
+

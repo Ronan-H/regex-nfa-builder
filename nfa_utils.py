@@ -39,16 +39,21 @@ def get_concat(a, b):
     b.transition_function = new_b_transition_function
 
     # merge b into a
-    # TODO check if |= operator works as expected (and isn't a bitwise operator etc)
     a.accept_states = b.accept_states
-    a.states = a.states | b.states
+    a.states |= b.states
     a.transition_function.update(b.transition_function)
-    a.alphabet = a.alphabet | b.alphabet
+    a.alphabet |= b.alphabet
 
     return a
 
 
 def get_nfa_list_concat(nfa_list):
+    """
+    Concatenates a list of NFA obecjts into one nfa
+
+    Eg. The NFA list [a, b, c] become a single NFA a.b.c
+    """
+
     if len(nfa_list) == 1:
         return nfa_list[0]
 

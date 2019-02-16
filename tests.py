@@ -82,12 +82,12 @@ class TestNFA(unittest.TestCase):
         nfa = nfa_utils.get_single_symbol_regex("a")
         nfa.add_state(2, True)
         nfa.add_transition(0, "", 2)
-
+        nfa.reset()
         print(nfa)
 
-        nfa.reset()
         self.assertTrue(nfa.is_accepting())
         nfa.feed_symbol("a")
         self.assertTrue(nfa.is_accepting())
         nfa.feed_symbol("a")
         self.assertFalse(nfa.is_accepting())
+        self.assertTrue(nfa.is_dead())

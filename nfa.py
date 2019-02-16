@@ -31,6 +31,10 @@ class NFA:
         NFA is now in, based on which states it used to be in
         """
 
+        # a dead NFA will not have any transitions after a symbol is fed in
+        if self.is_dead():
+            return
+
         new_states = set()
 
         # process each old state in turn
@@ -54,11 +58,14 @@ class NFA:
         to cause any further state transitions
         """
 
+        # a dead NFA will not have any empty string transitions
+        if self.is_dead():
+            return
+
         new_states = None
-        prev_states = self.states
+        prev_states = self.in_states
         first_run = True
 
-        # TODO: check if Python has do..while statements to use here
         while first_run or len(new_states) > 0:
             new_states = set()
 
@@ -72,7 +79,8 @@ class NFA:
                     # add the corresponding new state to the updated states list
                     new_states.add(self.transition_function[pair])
 
-            self.in_states = self.in_states | new_states
+            # merge new states back into "in" states, and reset for next pass
+            self.in_states |= new_states
             prev_states = new_states
             first_run = False
 

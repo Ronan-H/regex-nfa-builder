@@ -11,6 +11,33 @@ def get_single_symbol_regex(symbol):
     return nfa
 
 
+def shift_nfa(nfa, inc):
+    """
+    Increases the value of all states (including accept states and transition function etc)
+    of a given NFA bya given value.
+
+    This is useful for merging NFAs, to prevent overlapping states
+    """
+    # update NFA states
+    new_states = set()
+    for state in nfa.states:
+        new_states.add(state + inc)
+    nfa.states = new_states
+
+    # update NFA accept states
+    new_accept_states = set()
+    for state in nfa.accept_states:
+        new_accept_states.add(state + inc)
+    nfa.accept_states = new_accept_states
+
+    # update NFA transition function
+    new_transition_function = {}
+    for pair in nfa.transition_function:
+        new_key = (pair[0] + inc, pair[1])
+        new_transition_function[new_key] = nfa.transition_function[pair] + inc
+    nfa.transition_function = new_transition_function
+
+
 def get_concat(a, b):
     """ Concatenates two NFAs, ie. the dot operator """
 
@@ -19,24 +46,8 @@ def get_concat(a, b):
     # one state overlaps; this is the state that connects a and b
     add = max(a.states)
 
-    # update all b states
-    new_b_states = set()
-    for n in b.states:
-        new_b_states.add(n + add)
-    b.states = new_b_states
-
-    # update b accept states
-    new_b_accept_states = set()
-    for n in b.accept_states:
-        new_b_accept_states.add(n + add)
-    b.accept_states = new_b_accept_states
-
-    # update b transition function
-    new_b_transition_function = {}
-    for n in b.transition_function:
-        new_key = (n[0] + add, n[1])
-        new_b_transition_function[new_key] = b.transition_function[n] + add
-    b.transition_function = new_b_transition_function
+    # shift b's state/accept states/transition function, etc.
+    shift_nfa(b, add)
 
     # merge b into a
     a.accept_states = b.accept_states
@@ -64,8 +75,14 @@ def get_nfa_list_concat(nfa_list):
     return nfa
 
 
+def get_union(a, b):
+    """Returns the resulting union of two NFAs.(the '|' operator)"""
+    # TODO this method
+    pass
+
+
 def get_regex_nfa(regex):
-    """ Recursively builds an NFA based on the given regex """
+    """Recursively builds an NFA based on the given regex string"""
 
     # base case: single symbol is directly turned into an NFA
     if len(regex) == 1:

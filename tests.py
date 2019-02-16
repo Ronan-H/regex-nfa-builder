@@ -1,5 +1,4 @@
 import unittest
-from nfa import NFA
 import nfa_utils
 
 
@@ -51,8 +50,11 @@ class TestNFA(unittest.TestCase):
 
         concat_strings = ["abc", "cba", "GGG"]
 
+        # construct a large NFA by creating 3 sub NFAs, and
+        # concatenating them together
         nfa = None
         for str in concat_strings:
+            # construct sub nfa
             sub_nfa = None
             for c in str:
                 if sub_nfa is None:
@@ -60,6 +62,7 @@ class TestNFA(unittest.TestCase):
                 else:
                     sub_nfa = nfa_utils.get_concat(sub_nfa, nfa_utils.get_single_symbol_regex(c))
 
+            # combine this sub NFA with the overall NFA
             if nfa is None:
                 nfa = sub_nfa
             else:
@@ -79,15 +82,22 @@ class TestNFA(unittest.TestCase):
     def test_empty_string(self):
         print("Testing empty string transitions")
 
+        # construct an NFA equivalent to a|<empty string>
         nfa = nfa_utils.get_single_symbol_regex("a")
         nfa.add_state(2, True)
         nfa.add_transition(0, "", 2)
         nfa.reset()
         print(nfa)
 
+        # NFA should accept straight away due to the emoty string transition
+        # from the initial state to an acecpt state
         self.assertTrue(nfa.is_accepting())
+        # after feeding an 'a', the NFA should accept; state 2 is dead
+        # but a transition from state 0 to 1 (accepts) should still work
         nfa.feed_symbol("a")
         self.assertTrue(nfa.is_accepting())
+        # after feeding a final a, the NFA should be dead (no transitions available
+        # for the current "active" states)
         nfa.feed_symbol("a")
         self.assertFalse(nfa.is_accepting())
         self.assertTrue(nfa.is_dead())

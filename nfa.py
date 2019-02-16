@@ -1,10 +1,8 @@
 class NFA:
-    """class representing a non-deterministic finite automaton"""
+    """Class representing a non-deterministic finite automaton"""
 
     def __init__(self):
-        """
-        Creates a blank NFA
-        """
+        """Creates a blank NFA"""
 
         # all NFAs have a single initial state by default
         self.alphabet = set()

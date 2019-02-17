@@ -70,6 +70,7 @@ def get_concat(a, b):
     return a
 
 
+# TODO remove this function?
 def get_nfa_list_concat(nfa_list):
     """
     Concatenates a list of NFA objects into one nfa
@@ -116,10 +117,30 @@ def get_union(a, b):
     nfa.add_transition(max(a.states), "", {new_accept})
     nfa.add_transition(max(b.states), "", {new_accept})
 
-    # re-initialize the NFA after it's construction
-    # (this will feed the empty string through so the NFA is immediately in
-    # both of the sub NFAs a and b)
-    nfa.reset()
+    return nfa
+
+
+def get_kleene_star_nfa(nfa):
+    """
+    Wraps an NFA inside a kleene star expression
+    (NFA passed in recognizes 0, 1 or many of the strings it originally recognized)
+    """
+    # clear old accept state
+    nfa.accept_states = {}
+
+    # shift NFA by 1 and insert new initial state
+    shift(nfa, 1)
+    nfa.add_state(0)
+
+    # add new ending accept state
+    last_state = max(nfa.states)
+    new_accept = last_state + 1
+    nfa.add_state(new_accept, True)
+    nfa.add_transition(last_state, "", {new_accept})
+
+    # add remaining empty string transitions
+    nfa.add_transition(0, "", {1, new_accept})
+    nfa.add_transition(last_state, "", {0})
 
     return nfa
 
@@ -129,10 +150,6 @@ def get_regex_nfa(regex, indent=""):
 
     print("{0}Building NFA for regex:\n{0}({1})".format(indent, regex))
     indent += " " * 4
-
-    # base case: single symbol is directly turned into an NFA
-    if len(regex) == 1:
-        return get_single_symbol_regex(regex)
 
     # special symbols: *.| (in order of precedence highest to lowest, symbols coming before that
 
@@ -156,4 +173,24 @@ def get_regex_nfa(regex, indent=""):
             get_regex_nfa(regex[dot_pos + 1:], indent)
         )
 
+    # kleene star operator
+    star_pos = regex.find("*")
+    if star_pos != -1:
+        # there is an asterisk in the string; wrap everything before it in a kleene star expression
+        # (uses the leftmost dot if there are more than 1)
+        star_part = regex[:star_pos]
+        trailing_part = regex[star_pos + 1:]
+        kleene_nfa = get_kleene_star_nfa(get_regex_nfa(star_part, indent))
+
+        if len(trailing_part) > 0:
+            return get_concat(
+                kleene_nfa,
+                get_regex_nfa(trailing_part, indent)
+            )
+        else:
+            return kleene_nfa
+
+    # base case: single symbol is directly turned into an NFA
+    if len(regex) == 1:
+        return get_single_symbol_regex(regex)
 

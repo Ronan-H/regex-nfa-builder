@@ -105,13 +105,16 @@ class TestNFA(unittest.TestCase):
     def test_nfa_union(self):
         print("Testing NFA union a.b|c.d")
 
+        # build NFA
         nfa = nfa_utils.get_union(
             nfa_utils.get_regex_nfa("a.b"),
             nfa_utils.get_regex_nfa("c.d")
         )
 
+        nfa.reset()
         print(nfa)
 
+        # test accepts a.b
         self.assertFalse(nfa.is_accepting())
         nfa.feed_symbol("a")
         self.assertFalse(nfa.is_accepting())
@@ -120,6 +123,7 @@ class TestNFA(unittest.TestCase):
         nfa.feed_symbol("c")
         self.assertFalse(nfa.is_accepting())
 
+        # test accepts c.d
         nfa.reset()
         self.assertFalse(nfa.is_accepting())
         nfa.feed_symbol("c")
@@ -129,3 +133,54 @@ class TestNFA(unittest.TestCase):
         nfa.feed_symbol("e")
         self.assertFalse(nfa.is_accepting())
 
+    def test_kleene_star(self):
+        print("Testing kleene star NFA a*")
+
+        # build NFA
+        nfa = nfa_utils.get_regex_nfa("a*")
+        nfa.reset()
+        print(nfa)
+
+        # test if accepts empty string
+        self.assertTrue(nfa.is_accepting())
+
+        # test if accepts 1 or many a's
+        for i in range(20):
+            nfa.feed_symbol("a")
+            self.assertTrue(nfa.is_accepting())
+
+        # test if rejects other symbols
+        nfa.feed_symbol("b")
+        self.assertFalse(nfa.is_accepting())
+        self.assertTrue(nfa.is_dead())
+
+    def test_big_kleene_star(self):
+        print("Testing big kleene star NFA a*b*c*")
+
+        # build NFA
+        nfa = nfa_utils.get_regex_nfa("a*b*c*")
+        nfa.reset()
+        print(nfa)
+
+        # test if accepts empty string (none of a, b, or c)
+        self.assertTrue(nfa.is_accepting())
+
+        # test if rejects other symbol
+        nfa.feed_symbol("d")
+        self.assertFalse(nfa.is_accepting())
+
+        # test if accepts many a's, b's, and c's in order
+        symbols = ["a", "b", "c"]
+
+        # test different numbers of a's, b's, and c's
+        for i in range(10):
+            nfa.reset()
+            # feed each symbol a number of times
+            for symbol in symbols:
+                for j in range(i + 1):
+                    nfa.feed_symbol(symbol)
+                    self.assertTrue(nfa.is_accepting())
+
+        # test if rejects other symbol
+        nfa.feed_symbol("d")
+        self.assertFalse(nfa.is_accepting())

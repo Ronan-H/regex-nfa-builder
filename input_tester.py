@@ -34,6 +34,8 @@ while True:
         regex = line_read[6:]
         print("New regex pattern:", regex, "\n")
         regex_nfa = nfa_utils.get_regex_nfa(regex)
+
+        print()
         print(regex_nfa)
     else:
         # assume the user intends to test this entered string against the regex
@@ -41,10 +43,9 @@ while True:
             # regex has not yet been set
             print("Please supply a regular expression string first")
         else:
-            for symbol in line_read:
-                regex_nfa.feed_symbol(symbol)
+            regex_nfa.feed_symbols(line_read)
             accepts = regex_nfa.is_accepting()
-            print("String accepted: ", "Yes" if accepts else "No")
+            print("String \"{}\" {} by NFA".format(line_read, "ACCEPTED" if accepts else "REJECTED"))
 
             # print(regex_nfa)
             regex_nfa.reset()

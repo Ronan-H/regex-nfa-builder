@@ -21,7 +21,9 @@ class NFA:
 
     def add_transition(self, from_state, symbol, to_states):
         self.transition_function[(from_state, symbol)] = to_states
-        self.alphabet.add(symbol)
+
+        if symbol != "":
+            self.alphabet.add(symbol)
 
     def feed_symbol(self, symbol):
         """
@@ -49,6 +51,12 @@ class NFA:
 
         # feed the empty string through the nfa
         self.feed_empty()
+
+    def feed_symbols(self, symbols):
+        """Feeds an iterable into the NFAs feed_symbol method"""
+
+        for symbol in symbols:
+            self.feed_symbol(symbol)
 
     def feed_empty(self):
         """

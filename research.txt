@@ -28,3 +28,5 @@ Order: Symbol, Kleene star, Concatenation, Union
 I used the official Python documentation to learn about how unit testing is done in Python.
 I hope that developing test cases for different parts of the project will lower the amount of time I have to spend looking for the cause of bugs.
 https://docs.python.org/2/library/unittest.html
+
+When it came to adding support for parenthesis in the regular expressions, it seemed clear that it would be difficult, with the approach that I took to recursively building the NFA based on the regex string.

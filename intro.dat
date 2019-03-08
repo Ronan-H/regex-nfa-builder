@@ -1,0 +1,7 @@
+
+== Regex NFA Builder by Ronan Hanley ==
+
+Set the regular expression by typing regex=(regex here)
+Example: regex=011010
+
+You can give input text to test against that regex by just typing it in by itself.

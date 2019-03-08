@@ -1,15 +1,9 @@
 import sys
-from nfa import NFA
 import nfa_utils
 
-# print the welcome text block
-# TODO: read this from a file instead?
-print("\n== Regex NFA Builder by Ronan Hanley ==\n")
-
-print("Set the regular expression by typing regex=(regex here)")
-print("Example: regex=011010\n")
-
-print("You can give input text to test against that regex by just typing it in by itself.\n")
+# print the intro text block
+with open("intro.dat") as intro_file:
+    print(intro_file.read())
 
 # regular expression string to compare against provided input
 regex = None

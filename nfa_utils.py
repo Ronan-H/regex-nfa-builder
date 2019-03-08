@@ -70,24 +70,6 @@ def get_concat(a, b):
     return a
 
 
-# TODO remove this function?
-def get_nfa_list_concat(nfa_list):
-    """
-    Concatenates a list of NFA objects into one nfa
-
-    Eg. The NFA list [a, b, c] become a single NFA a.b.c
-    """
-
-    if len(nfa_list) == 1:
-        return nfa_list[0]
-
-    nfa = nfa_list[0]
-    for sub_nfa in nfa_list[1:]:
-        nfa = get_concat(nfa, sub_nfa)
-
-    return nfa
-
-
 def get_union(a, b):
     """Returns the resulting union of two NFAs (the '|' operator)"""
 

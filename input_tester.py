@@ -29,14 +29,13 @@ while True:
         regex = line_read[6:]
         print("New regex pattern:", regex, "\n")
         start_time = time.time()
+        # turn regular expression string into an NFA object
         regex_nfa = nfa_utils.get_regex_nfa(regex)
         regex_nfa.reset()
         finish_time = time.time()
         ms_taken = (finish_time - start_time) * 1000
 
-        print("\nBuilt NFA in {:.3f} ms.".format(ms_taken))
-
-        print()
+        print("\nBuilt NFA in {:.3f} ms.\n".format(ms_taken))
         print(regex_nfa)
     else:
         # assume the user intends to test this entered string against the regex
@@ -45,7 +44,8 @@ while True:
             print("Please supply a regular expression string first, with regex=(regex here)")
         else:
             start_time = time.time()
-            regex_nfa.feed_symbols(line_read)
+            # feed input string into NFA
+            regex_nfa.feed_symbols(line_read, return_if_dies=True)
             accepts = regex_nfa.is_accepting()
             finish_time = time.time()
             ms_taken = (finish_time - start_time) * 1000

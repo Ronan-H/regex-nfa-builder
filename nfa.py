@@ -52,11 +52,21 @@ class NFA:
         # feed the empty string through the nfa
         self.feed_empty()
 
-    def feed_symbols(self, symbols):
-        """Feeds an iterable into the NFAs feed_symbol method"""
+    def feed_symbols(self, symbols, return_if_dies=False):
+        """
+        Feeds an iterable into the NFAs feed_symbol method
+
+        :param symbols: Iterable of symbols to feed through the NFA
+        :param return_if_dies: If true, ignore any further symbols after the NFA dies (for efficiency),
+        since a dead NFA will never accept, regardless of any further input.
+        """
 
         for symbol in symbols:
             self.feed_symbol(symbol)
+
+            if return_if_dies and self.is_dead():
+                # NFA is dead; feeding further symbols will not change the NFA's state
+                return
 
     def feed_empty(self):
         """

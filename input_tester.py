@@ -1,5 +1,6 @@
 import sys
 import nfa_utils
+import time
 
 # print the intro text block
 with open("intro.dat") as intro_file:
@@ -27,7 +28,13 @@ while True:
         # user wants to set the regex to a string they've provided
         regex = line_read[6:]
         print("New regex pattern:", regex, "\n")
+        start_time = time.time()
         regex_nfa = nfa_utils.get_regex_nfa(regex)
+        regex_nfa.reset()
+        finish_time = time.time()
+        ms_taken = (finish_time - start_time) * 1000
+
+        print("\nBuilt NFA in {:.3f} ms.".format(ms_taken))
 
         print()
         print(regex_nfa)
@@ -35,11 +42,19 @@ while True:
         # assume the user intends to test this entered string against the regex
         if regex_nfa is None:
             # regex has not yet been set
-            print("Please supply a regular expression string first")
+            print("Please supply a regular expression string first, with regex=(regex here)")
         else:
+            start_time = time.time()
             regex_nfa.feed_symbols(line_read)
             accepts = regex_nfa.is_accepting()
-            print("String \"{}\" {} by NFA".format(line_read, "ACCEPTED" if accepts else "REJECTED"))
+            finish_time = time.time()
+            ms_taken = (finish_time - start_time) * 1000
+
+            print("String \"{}\" was {} by NFA".format(
+                line_read,
+                "ACCEPTED" if accepts else "REJECTED",
+            ))
+            print("Calculated in {:.3f} ms.".format(ms_taken))
 
             # print(regex_nfa)
             regex_nfa.reset()

@@ -129,3 +129,14 @@ class NFA:
                     self.in_states,
                     "Yes" if self.is_accepting() else "No")
 
+    def __eq__(self, other):
+        """
+        Checks if two NFAs are equal. Used for testing.
+
+        Tests if they are structurally the same; does NOT check if they are in the same states.
+
+        Also ignores alphabets.
+        """
+        return self.states == other.states \
+           and self.transition_function == other.transition_function \
+           and self.accept_states == other.accept_states

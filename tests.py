@@ -184,3 +184,26 @@ class TestNFA(unittest.TestCase):
         # test if rejects other symbol
         nfa.feed_symbol("d")
         self.assertFalse(nfa.is_accepting())
+
+    def test_nfa_equals(self):
+        print("Testing NFA equals function")
+
+        # test equal
+        nfa_a = nfa_utils.get_regex_nfa("a.b|c")
+        nfa_b = nfa_utils.get_regex_nfa("a.b|c")
+
+        self.assertEqual(nfa_a, nfa_b)
+
+        # test NOT equal
+        nfa_a = nfa_utils.get_regex_nfa("a.b|c")
+        nfa_b = nfa_utils.get_regex_nfa("a.b.c.d")
+
+        self.assertNotEqual(nfa_a, nfa_b)
+
+    def test_implicit_concatenation(self):
+        print("Testing implicit NFA concatenation")
+
+        nfa_a = nfa_utils.get_regex_nfa("a.b.c.d|c")
+        nfa_b = nfa_utils.get_regex_nfa("abcd|c")
+
+        self.assertEqual(nfa_a, nfa_b)

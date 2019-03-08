@@ -172,7 +172,15 @@ def get_regex_nfa(regex, indent=""):
         else:
             return kleene_nfa
 
-    # base case: single symbol is directly turned into an NFA
-    if len(regex) == 1:
-        return get_single_symbol_regex(regex)
+    # no special symbols left at this point
 
+    if len(regex) == 1:
+        # base case: single symbol is directly turned into an NFA
+        return get_single_symbol_regex(regex)
+    else:
+        # multiple characters left; apply implicit concatenation between the first character
+        # and the remaining characters
+        return get_concat(
+            get_regex_nfa(regex[0], indent),
+            get_regex_nfa(regex[1:], indent)
+        )

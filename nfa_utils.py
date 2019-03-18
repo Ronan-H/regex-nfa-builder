@@ -174,7 +174,10 @@ def get_regex_nfa(regex, indent=""):
 
     # no special symbols left at this point
 
-    if len(regex) == 1:
+    if len(regex) == 0:
+        # base case: empty nfa for empty regex
+        return NFA()
+    elif len(regex) == 1:
         # base case: single symbol is directly turned into an NFA
         return get_single_symbol_regex(regex)
     else:

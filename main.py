@@ -50,10 +50,9 @@ while True:
             finish_time = time.time()
             ms_taken = (finish_time - start_time) * 1000
 
-            print("String \"{}\" was {} by NFA".format(
-                line_read,
-                "ACCEPTED" if accepts else "REJECTED",
-            ))
+            print("String was {} by NFA"
+                  .format("ACCEPTED" if accepts else "REJECTED"))
+
             print("Calculated in {:.3f} ms.".format(ms_taken))
 
             # print(regex_nfa)

@@ -1,4 +1,5 @@
 from nfa import NFA
+import copy
 
 
 def get_single_symbol_regex(symbol):
@@ -132,7 +133,10 @@ def get_one_or_more_of_nfa(nfa):
 
     Simply combines the concatenation operator and the kleene star operator.
     """
-    return get_concat(nfa, get_kleene_star_nfa(nfa))
+
+    # must make a copy of the nfa,
+    # these functions operate on the nfa passed in, they do not make a copy
+    return get_concat(copy.deepcopy(nfa), get_kleene_star_nfa(nfa))
 
 def get_regex_nfa(regex, indent=""):
     """Recursively builds an NFA based on the given regex string"""
@@ -140,7 +144,7 @@ def get_regex_nfa(regex, indent=""):
     print("{0}Building NFA for regex:\n{0}({1})".format(indent, regex))
     indent += " " * 4
 
-    # special symbols: *.| (in order of precedence highest to lowest, symbols coming before that
+    # special symbols: +*.| (in order of precedence highest to lowest, symbols coming before that
 
     # union operator
     bar_pos = regex.find("|")
@@ -179,6 +183,7 @@ def get_regex_nfa(regex, indent=""):
         else:
             return kleene_nfa
 
+    # "one or more of" operator ('+' symbol)
     plus_pos = regex.find("+")
     if plus_pos != -1:
         # there is a plus in the string; wrap everything before it in the "one or more of" expression

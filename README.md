@@ -1,3 +1,4 @@
+
 # Regex NFA Builder
 
 ### What is this?
@@ -45,6 +46,8 @@ It will also report some information on how much time was taken for an NFA to bu
 **Union operator:** | (pipe character)
 
 **Kleene star:** * (asterisk)
+
+**One-or-more operator:** + (plus)
 
 ### What alphabet symbols are supported?
 Anything that isn't recognized as a special character.

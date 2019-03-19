@@ -185,6 +185,27 @@ class TestNFA(unittest.TestCase):
         nfa.feed_symbol("d")
         self.assertFalse(nfa.is_accepting())
 
+    def test_one_or_more_of(self):
+        print("Testing \"one or more of\" operator a+")
+
+        # build NFA
+        nfa = nfa_utils.get_regex_nfa("a+")
+        nfa.reset()
+        print(nfa)
+
+        # test if rejects empty string
+        self.assertFalse(nfa.is_accepting())
+
+        # test if accepts 1 or many a's
+        for i in range(20):
+            nfa.feed_symbol("a")
+            self.assertTrue(nfa.is_accepting())
+
+        # test if rejects other symbols
+        nfa.feed_symbol("b")
+        self.assertFalse(nfa.is_accepting())
+        self.assertTrue(nfa.is_dead())
+
     def test_nfa_equals(self):
         print("Testing NFA equals function")
 

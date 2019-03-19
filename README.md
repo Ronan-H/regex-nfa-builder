@@ -49,6 +49,11 @@ It will also report some information on how much time was taken for an NFA to bu
 
 **One-or-more operator:** + (plus)
 
+### What order of precedence do those operations follow?
+**Order:** + * . |
+
+Left to right, where '+' is done first, and '|' is done last.
+
 ### What alphabet symbols are supported?
 Anything that isn't recognized as a special character.
 

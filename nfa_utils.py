@@ -126,6 +126,13 @@ def get_kleene_star_nfa(nfa):
 
     return nfa
 
+def get_one_or_more_of_nfa(nfa):
+    """
+    Wraps an NFA inside the "one or more of" operator (plus symbol)
+
+    Simply combines the concatenation operator and the kleene star operator.
+    """
+    return get_concat(nfa, get_kleene_star_nfa(nfa))
 
 def get_regex_nfa(regex, indent=""):
     """Recursively builds an NFA based on the given regex string"""
@@ -171,6 +178,23 @@ def get_regex_nfa(regex, indent=""):
             )
         else:
             return kleene_nfa
+
+    plus_pos = regex.find("+")
+    if plus_pos != -1:
+        # there is a plus in the string; wrap everything before it in the "one or more of" expression
+        # (uses the leftmost plus if there are more than 1)
+
+        plus_part = regex[:plus_pos]
+        trailing_part = regex[plus_pos + 1:]
+        plus_nfa = get_one_or_more_of_nfa(get_regex_nfa(plus_part, indent))
+
+        if len(trailing_part) > 0:
+            return get_concat(
+                plus_nfa,
+                get_regex_nfa(trailing_part, indent)
+            )
+        else:
+            return plus_nfa
 
     # no special symbols left at this point
 

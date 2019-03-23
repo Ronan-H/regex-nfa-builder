@@ -212,13 +212,13 @@ def get_regex_nfa(regex, indent=""):
             return plus_nfa
 
     # "zero or one of" operator ('?' symbol)
-    plus_pos = regex.find("?")
-    if plus_pos != -1:
+    qmark_pos = regex.find("?")
+    if qmark_pos != -1:
         # there is a question mark in the string; wrap everything before it in the "zero or one of" expression
         # (uses the leftmost question mark if there are more than 1)
 
-        leading_part = regex[:plus_pos]
-        trailing_part = regex[plus_pos + 1:]
+        leading_part = regex[:qmark_pos]
+        trailing_part = regex[qmark_pos + 1:]
         zero_or_one_of_nfa = get_zero_or_one_of_nfa(get_regex_nfa(leading_part, indent))
 
         if len(trailing_part) > 0:

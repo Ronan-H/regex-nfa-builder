@@ -47,17 +47,28 @@ It will also report some information on how much time was taken for an NFA to bu
 
 **Kleene star:** * (asterisk)
 
-**One-or-more operator:** + (plus)
+**One-or-more-of operator:** + (plus)
+
+**Zero-or-one-of operator:** ? (question mark)
 
 ## What order of precedence do those operations follow?
-**Order:** + * . |
+**Order:** ? + * . |
 
-Left to right, where '+' is done first, and '|' is done last.
+Left to right, where '?' is done first, and '|' is done last.
 
 ## What alphabet symbols are supported?
 Anything that isn't recognized as a special character.
 
 Internally, there are no preset alphabet characters. They are based on whatever input you give it.
+
+## Examples?
+**p.y.t.h.o.n** or **python** - Matches only the word "python"
+
+**python|java|C#** - Matches any one of python, java or C#
+
+**o+k then** or **o\*ok then** - Matches ok then, ooook then, ooooooook then...
+
+**c?loud** - Matches cloud and loud
 
 ## How do I run the test cases?
 _python3 -m unittest discover ._ seems to work, although I've been running the tests from within Pycharm.

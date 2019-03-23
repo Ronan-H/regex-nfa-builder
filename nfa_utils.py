@@ -138,6 +138,16 @@ def get_one_or_more_of_nfa(nfa):
     # these functions operate on the nfa passed in, they do not make a copy
     return get_concat(copy.deepcopy(nfa), get_kleene_star_nfa(nfa))
 
+def get_zero_or_one_of_nfa(nfa):
+    """
+    Wraps an NFA inside the "zero or one of" operator (question mark symbol)
+
+    Simply uses the union operator, with one path for the empty string, and the other path
+    for the NFA being wrapped.
+    """
+
+    return get_concat(get_single_symbol_regex(""), nfa)
+
 def get_regex_nfa(regex, indent=""):
     """Recursively builds an NFA based on the given regex string"""
 

@@ -146,7 +146,7 @@ def get_zero_or_one_of_nfa(nfa):
     for the NFA being wrapped.
     """
 
-    return get_concat(get_single_symbol_regex(""), nfa)
+    return get_union(get_single_symbol_regex(""), nfa)
 
 def get_regex_nfa(regex, indent=""):
     """Recursively builds an NFA based on the given regex string"""

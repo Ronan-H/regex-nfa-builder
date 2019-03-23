@@ -206,6 +206,37 @@ class TestNFA(unittest.TestCase):
         self.assertFalse(nfa.is_accepting())
         self.assertTrue(nfa.is_dead())
 
+    def zero_or_one_of(self):
+        print("Testing \"zero or one of\" operator a?bcd")
+
+        # build NFA
+        nfa = nfa_utils.get_regex_nfa("a?bcd")
+        nfa.reset()
+        print(nfa)
+
+        # test rejects empty string
+        self.assertFalse(nfa.is_accepting())
+
+        # test accepts "bcd"
+        nfa.feed_symbols("bcd")
+        self.assertTrue(nfa.is_accepting())
+        nfa.reset()
+
+        # test also accepts "abcd"
+        nfa.feed_symbol("abcd")
+        self.assertTrue(nfa.is_accepting())
+        nfa.reset()
+
+        # test rejects "aabcd"
+        nfa.feed_symbols("aabcd")
+        self.assertFalse(nfa.is_accepting())
+        nfa.reset()
+
+        # test rejects "aaaaaaaaabcd"
+        nfa.feed_symbols("aaaaaaaaabcd")
+        self.assertFalse(nfa.is_accepting())
+        nfa.reset()
+
     def test_nfa_equals(self):
         print("Testing NFA equals function")
 

@@ -64,11 +64,13 @@ Internally, there are no preset alphabet characters. They are based on whatever 
 ## Examples?
 **p.y.t.h.o.n** or **python** - Matches only the word "python"
 
-**python|java|C#** - Matches any one of python, java or C#
+**python|java|C#** - Matches any one of "python", "java" or "C#"
 
-**o+k then** or **o\*ok then** - Matches ok then, ooook then, ooooooook then...
+**o+k then** or **o\*ok then** - Matches "ok then", "ooook then", "ooooooook then", etc...
 
-**c?loud** - Matches cloud and loud
+**c?loud** - Matches "cloud" and "loud"
+
+**H?A?h?a?*!\*|H?E?h?e?\*!\*** - Accepts a wide range of laughs, including "Ha", "heh", "Haha", and "AAAAAAAAAAHAHAHAHAHA!!"
 
 ## How do I run the test cases?
 _python3 -m unittest discover ._ seems to work, although I've been running the tests from within Pycharm.

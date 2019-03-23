@@ -78,26 +78,31 @@ class NFA:
         if self.is_dead():
             return
 
-        new_states = None
-        prev_states = self.in_states
+        old_states_len = None
+        # set of states that will be fed the empty string on the next pass
+        unproc_states = self.in_states
         first_run = True
 
-        while first_run or len(new_states) > 0:
+        # keep feeding the empty string until no more new states are transitioned into
+        while first_run or len(self.in_states) > old_states_len:
+            old_states_len = len(self.in_states)
+            # set of new states transitioned into after the empty string was fed
             new_states = set()
 
             # process each state in turn
-            for state in prev_states:
+            for state in unproc_states:
                 pair = (state, "")
 
                 # check if this state has a transition using the empty string
                 # to another state
                 if pair in self.transition_function:
-                    # add the corresponding new state to the updated states list
+                    # add the new state to a set to be added to self.in_states later
                     new_states |= self.transition_function[pair]
 
-            # merge new states back into "in" states, and reset for next pass
+            # merge new states back into "in" states
             self.in_states |= new_states
-            prev_states = new_states
+            # all new states discovered will be fed the empty string on the next pass
+            unproc_states = new_states
             first_run = False
 
     def is_accepting(self):

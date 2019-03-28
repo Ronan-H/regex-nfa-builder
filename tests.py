@@ -259,3 +259,133 @@ class TestNFA(unittest.TestCase):
         nfa_b = nfa_utils.get_regex_nfa("abcd|c")
 
         self.assertEqual(nfa_a, nfa_b)
+
+    def test_readme_example_1(self):
+        print("Testing README example \"p.y.t.h.o.n or python\"")
+
+        # test with and without implicit concatenation
+        variations = ["python", "p.y.t.h.o.n"]
+
+        for variation in variations:
+            # build NFA
+            nfa = nfa_utils.get_regex_nfa(variation)
+            nfa.reset()
+            print(nfa)
+
+            # test rejects empty string
+            self.assertFalse(nfa.is_accepting())
+
+            # test accepts "python"
+            nfa.feed_symbols("python")
+            self.assertTrue(nfa.is_accepting())
+            nfa.reset()
+
+            # test rejects "java"
+            nfa.feed_symbol("java")
+            self.assertFalse(nfa.is_accepting())
+            nfa.reset()
+
+    def test_readme_example_2(self):
+        print("Testing README example \"python|java|C#\"")
+
+        # build NFA
+        nfa = nfa_utils.get_regex_nfa("python|java|C#")
+        nfa.reset()
+        print(nfa)
+
+        # test rejects empty string
+        self.assertFalse(nfa.is_accepting())
+
+        accept_list = ["python", "java", "C#"]
+        reject_list = ["perl", "C++", "Go"]
+
+        # test accepts all in accept list
+        for symbol_input in accept_list:
+            nfa.feed_symbols(symbol_input)
+            self.assertTrue(nfa.is_accepting())
+            nfa.reset()
+
+        # test reject all in reject list
+        for symbol_input in reject_list:
+            nfa.feed_symbols(symbol_input)
+            self.assertFalse(nfa.is_accepting())
+            nfa.reset()
+
+    def test_readme_example_3(self):
+        print("Testing README example \"o+k then or o*ok then\"")
+
+        # test both + symbol and * symbol variations
+        variations = ["o+k then", "o*ok then"]
+
+        for variation in variations:
+            # build NFA
+            nfa = nfa_utils.get_regex_nfa(variation)
+            nfa.reset()
+            print(nfa)
+
+            # test rejects empty string
+            self.assertFalse(nfa.is_accepting())
+
+            accept_list = ["ok then", "ooook then", "ooooooook then"]
+            reject_list = ["k then", "okay", "oki-doki"]
+
+            # test accepts all in accept list
+            for symbol_input in accept_list:
+                nfa.feed_symbols(symbol_input)
+                self.assertTrue(nfa.is_accepting())
+                nfa.reset()
+
+            # test reject all in reject list
+            for symbol_input in reject_list:
+                nfa.feed_symbols(symbol_input)
+                self.assertFalse(nfa.is_accepting())
+                nfa.reset()
+
+    def test_readme_example_4(self):
+        print("Testing README example \"c?loud\"")
+
+        # build NFA
+        nfa = nfa_utils.get_regex_nfa("c?loud")
+        nfa.reset()
+        print(nfa)
+
+        # test rejects empty string
+        self.assertFalse(nfa.is_accepting())
+
+        accept_list = ["cloud", "loud"]
+        reject_list = ["oud", "ccloud"]
+
+        # test accepts all in accept list
+        for symbol_input in accept_list:
+            nfa.feed_symbols(symbol_input)
+            self.assertTrue(nfa.is_accepting())
+            nfa.reset()
+
+        # test reject all in reject list
+        for symbol_input in reject_list:
+            nfa.feed_symbols(symbol_input)
+            self.assertFalse(nfa.is_accepting())
+            nfa.reset()
+
+    def test_readme_example_5(self):
+        print("Testing README example \"H?A?h?a?*!*|H?E?h?e?*!*\"")
+
+        # build NFA
+        nfa = nfa_utils.get_regex_nfa("H?A?h?a?*!*|H?E?h?e?*!*")
+        nfa.reset()
+        print(nfa)
+
+        accept_list = ["Hah", "heh", "Haha", "AAAAAAAAAAHAHAHAHAHA!!", "eeeehehehehehe", "hhhaaaaaaaaaaaa", "HEHEEE!"]
+        reject_list = ["Heaha", "Haha!h!", "!haha", "I don't get it"]
+
+        # test accepts all in accept list
+        for symbol_input in accept_list:
+            nfa.feed_symbols(symbol_input)
+            self.assertTrue(nfa.is_accepting())
+            nfa.reset()
+
+        # test reject all in reject list
+        for symbol_input in reject_list:
+            nfa.feed_symbols(symbol_input)
+            self.assertFalse(nfa.is_accepting())
+            nfa.reset()

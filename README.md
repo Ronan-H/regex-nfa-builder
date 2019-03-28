@@ -73,7 +73,9 @@ Internally, there are no preset alphabet characters. They are based on whatever 
 **H?A?h?a?*!\*|H?E?h?e?\*!\*** - Accepts a wide range of laughs, including "Ha", "heh", "Haha", and "AAAAAAAAAAHAHAHAHAHA!!"
 
 ## How do I run the test cases?
-_python3 -m unittest discover ._ seems to work, although I've been running the tests from within Pycharm.
+Run this command from within the project directory:
+
+*python3 -m unittest tests.TestNFA*
 
 ## Why didn't you use postfix notation, or store NFAs on a stack etc?
 It's probably a better idea but I had more fun figuring it out on my own.

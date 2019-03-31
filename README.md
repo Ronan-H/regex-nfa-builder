@@ -22,6 +22,8 @@ The regular expression is never converted to postfix notation, it operates on in
 You need Python 3 to run this project.
 Clone the repo and run *python3 main.py* from inside.
 
+You may want to run *python main.py* instead, depending on your setup.
+
 ## How do I use the program?
 Follow the instructions provided when you run the program:
 
@@ -76,6 +78,8 @@ Internally, there are no preset alphabet characters. They are based on whatever 
 Run this command from within the project directory:
 
 *python3 -m unittest tests.TestNFA*
+
+You may want to run *python -m unittest tests.TestNFA* instead, depending on your setup.
 
 ## Why didn't you use postfix notation, or store NFAs on a stack etc?
 It's probably a better idea but I had more fun figuring it out on my own.
